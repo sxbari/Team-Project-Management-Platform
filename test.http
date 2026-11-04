@@ -1,0 +1,13 @@
+
+
+POST http://127.0.0.1:8000/api/register/
+Content-Type: application/json
+Cookie: sessionid=7nzcts98x3veh7zuksrkb3p70um0xl9g;csrftoken=HCL2RVG63xAzxvrGX3wgUMpWEnJkWVrM
+X-CSRFToken: 8BNk5Po1tNbtVpMqhRlhrsvNDohF2VIwF3ocMAUXmaBSiK3W4KHnb4Kz7BQPOGZ8
+
+{
+    "username": "tesuser",
+    "email": "sabarivizier@16gmai.com",
+    "password": "teshaoh"
+
+}
