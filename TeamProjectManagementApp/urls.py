@@ -7,5 +7,6 @@ urlpatterns = [
     path('csrf/', views.csrf_token_view, name='csrf'),
     path('tasks/', views.func3, name='tasks'),
     path('register/', views.register, name='register'),
+    path('login/',views.login_view, name = 'login')
 
 ]

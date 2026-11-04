@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from TeamProjectManagementApp.models import Tasks, Team, Membership
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 def register(request):
@@ -23,7 +24,21 @@ def register(request):
         return JsonResponse({"message": "User created successfully!"}, status = 201)
 
 
-        
+def login_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get("username")
+        password = data.get("password")
+
+        user = authenticate(request,username=username,password=password)
+
+        if user is not None:
+            login(request,user)
+            return JsonResponse({"message":"Login Successfull"},status = 201)
+        else:
+            return JsonResponse({"message":"Invalid Login Credentials"},status = 401)
+    else:
+        return JsonResponse({"message":"Method Not Allowed"},status = 405)
 
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
