@@ -16,4 +16,5 @@ class TeamTests(TestCase):
         response = self.client.get("/api/teams/")
 
         self.assertEqual(response.status_code, 200)
+        print(response.json())
         self.assertEqual(len(response.json()), 2)
