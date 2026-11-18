@@ -30,7 +30,7 @@ function LoginPage() {
             const data = await response.json();
             if (response.ok){
                 setMessage("Login successful");
-                navigate("/homepage");
+                navigate("/me");
             } else{
                 setMessage(data.error || "Login failed");
             }
@@ -64,6 +64,7 @@ function LoginPage() {
                 </div>
                 <button type="submit">Login</button>
             </form>
+            <button type="button" onClick={() => navigate("/register")}>Register</button>
             <p>{message}</p>
             
         </div>
