@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from TeamProjectManagementApp.models import Tasks, Team, Membership
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout 
 # Create your views here.
 
 def register(request):
@@ -43,7 +43,7 @@ def login_view(request):
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
 
-def func1(request):
+def team_list_create(request):
     if request.method == "GET":
         data =list(Team.objects.all().values())
         return JsonResponse(data, safe=False)
@@ -56,7 +56,7 @@ def func1(request):
         return JsonResponse({"message": "Object created successfully!"}, status=201)
 
 
-def func2(request, team_id):
+def team_membership_list_create(request, team_id):
     if request.method == "GET":
         data = list(Membership.objects.filter(team_id=team_id).values())
         return JsonResponse(data, safe=False)
@@ -88,7 +88,7 @@ def func2(request, team_id):
 
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
-def func3(request):
+def assigned_tasks_list_create(request):
     if request.method == "GET":
         if not request.user.is_authenticated:
             return JsonResponse({"error":"login required"},status = 401)
@@ -216,4 +216,76 @@ def send_request(request):
     )
     return JsonResponse(
         {"message":"Request sent successfully"},status=201
+    )
+
+def logout_user(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {
+                "error":"Unauthenticated"
+            },status=401
+        )
+    logout(request)
+    return JsonResponse(
+        {
+            "message":"Logout Successfully!"
+        },status=200
+    )
+
+def team_data(request,team_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {
+                "error":"Unauthenticated"
+            },status=401
+        )
+    try:
+        data = Team.objects.get(id=team_id)
+    except Team.DoesNotExist:
+        return JsonResponse(
+            {
+                "error":"No Team Exists on with that ID."
+            },status=404
+        ) 
+    team_name = data.team_name
+    team_desc= data.description
+    team_creationtime = data.created_at
+    team_status = data.is_active
+    team_details = {
+        "team_name":team_name,
+        "team_description":team_desc,
+        "team_creation_time":team_creationtime,
+        "team_status": team_status
+        }
+
+    return JsonResponse(
+        {
+            "message":team_details
+        },status=200
+    )
+
+def team_members(request,team_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {
+                "error":"Unauthenticated"
+            },status=401
+        )
+    data = Membership.objects.filter(team_id=team_id,
+                                     status__in=("approved","Approved"))
+    member_detail = []
+    for person in data:
+        teamMember = person.user.username
+        role = person.role 
+        joined = person.joined_at
+        member_detail.append({
+            "username":teamMember,
+            "role":role,
+            "joining date":joined
+        })
+
+    return JsonResponse(
+        {
+            "details":member_detail
+        },status=200
     )
