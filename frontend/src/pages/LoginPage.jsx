@@ -30,7 +30,7 @@ function LoginPage() {
             const data = await response.json();
             if (response.ok){
                 setMessage("Login successful");
-                navigate("/me");
+                navigate("/homepage");
             } else{
                 setMessage(data.error || "Login failed");
             }
